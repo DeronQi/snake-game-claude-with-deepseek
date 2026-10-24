@@ -15,6 +15,7 @@
     "analyze": "node tools/analyze-ai.cjs",
     "verify": "node tools/verify.cjs",
     "verify:sw": "node tools/verify-sw-update.cjs",
+    "screenshots": "node tools/capture-screenshots.cjs",
     "icons": "python tools/make_icons.py"
   },
   "devDependencies": {

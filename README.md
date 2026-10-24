@@ -4,6 +4,31 @@
 
 源码仓库：<https://github.com/DeronQi/snake-game-claude-with-deepseek>
 
+## 截图
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/desktop-start.png" alt="开始界面与难度选择" width="560"><br>
+      <sub>开始界面 · 四档难度与 AI 演示入口</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/desktop-ai-gameplay.png" alt="AI 演示中的棋盘" width="560"><br>
+      <sub>AI 演示 · 安全捷径与实时速度</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/mobile-gameplay.png" alt="手机竖屏游玩" width="250"><br>
+      <sub>手机竖屏 · 触屏方向键与手势转向</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/desktop-win.png" alt="AI 填满 400 格通关" width="560"><br>
+      <sub>AI 通关 · 397 个果实填满 400 格</sub>
+    </td>
+  </tr>
+</table>
+
 ## 文件清单
 
 | 文件 | 说明 |
@@ -19,7 +44,9 @@
 | `tools/analyze-ai.cjs` | 基线 / 本策略 / 曼哈顿下界的分阶段分析 |
 | `tools/verify.cjs` | Playwright：四视口、像素识别自动游玩、AI 通关、file:// |
 | `tools/verify-sw-update.cjs` | Playwright：脏缓存、SW 更新、旧缓存清理、离线刷新 |
+| `tools/capture-screenshots.cjs` | Playwright 截图脚本（桌面/手机/通关） |
 | `tools/make_icons.py` | Pillow 图标生成脚本（可重复运行） |
+| `docs/screenshots/` | README 展示截图 |
 | `LICENSE` | MIT 开源许可证 |
 | `CHANGELOG.md` | 版本与验证记录 |
 | `package.json` | **仅开发验证**所需的 Playwright 依赖与 npm scripts |
@@ -169,6 +196,9 @@ python tools/make_icons.py
 
 # 可选：1000 个随机种子的完整通关压力验证
 node tools/simulate-ai.cjs --stress=1000
+
+# 重新生成 README 截图
+node tools/capture-screenshots.cjs
 ```
 
 `tools/verify.cjs` 不只读取内部状态：它从 Canvas 像素聚类识别蛇头、果实和身体占用，再用 BFS 自动寻路，通过键盘 / 屏幕方向键 / 触摸滑动真实游玩；随后断言计分、升级、暂停恢复、R 重开、最高分即时落盘与刷新持久化、标题、布局、控制台错误、AI 浏览器通关及 `file://` 可玩。

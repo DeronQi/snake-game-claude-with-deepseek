@@ -15,6 +15,7 @@
 - 保证填满 400 格的哈密顿环 AI，以及 ×1～MAX 演示速度、浏览器内自动通关。
 - Playwright 四视口验收、Canvas 像素自动游玩、SW 脏缓存与离线刷新测试。
 - `tools/simulate-ai.cjs --stress=N` 随机种子压力验证。
+- README 桌面、移动端与通关截图，以及可复现的 `tools/capture-screenshots.cjs`。
 
 ### Changed
 
