@@ -1,0 +1,21 @@
+# Dependencies (Playwright is only needed for local verification)
+node_modules/
+
+# Local tooling / editor settings
+.claude/
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Test artifacts
+playwright-report/
+test-results/
+tools/_*.png
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

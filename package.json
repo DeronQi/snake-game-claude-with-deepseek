@@ -1,0 +1,16 @@
+{
+  "name": "snake-game-claude-with-deepseek",
+  "version": "1.0.0",
+  "private": true,
+  "description": "20×20 原生贪吃蛇 + 哈密顿环 AI + PWA",
+  "scripts": {
+    "simulate": "node tools/simulate-ai.cjs",
+    "analyze": "node tools/analyze-ai.cjs",
+    "verify": "node tools/verify.cjs",
+    "verify:sw": "node tools/verify-sw-update.cjs",
+    "icons": "python tools/make_icons.py"
+  },
+  "devDependencies": {
+    "playwright": "1.59.1"
+  }
+}

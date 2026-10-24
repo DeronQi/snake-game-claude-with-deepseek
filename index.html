@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05080f">
+  <meta name="description" content="原生 HTML/CSS/JS 贪吃蛇，支持 PWA 离线安装，并内置可保证填满 20×20 棋盘的哈密顿环 AI。">
+  <meta name="color-scheme" content="dark">
+  <title>贪吃蛇</title>
+  <link rel="manifest" href="manifest.webmanifest?v=1">
+  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="贪吃蛇">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand" aria-label="贪吃蛇">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" role="presentation">
+            <path d="M9 12h11a5 5 0 0 1 0 10h-4a5 5 0 0 0 0 10h15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="31" cy="32" r="3" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="brand-copy">
+          <span class="eyebrow">ARCADE / 20 × 20</span>
+          <h1>贪吃蛇</h1>
+        </span>
+      </div>
+
+      <div class="top-actions" role="toolbar" aria-label="游戏工具">
+        <button class="icon-btn ai-toggle" id="aiToggle" type="button" aria-label="开启 AI 演示" aria-pressed="false" title="AI 演示">🤖</button>
+        <button class="icon-btn" id="soundToggle" type="button" aria-label="静音" aria-pressed="false" title="声音">🔊</button>
+        <button class="icon-btn" id="fullscreenToggle" type="button" aria-label="进入全屏" aria-pressed="false" title="全屏">⛶</button>
+        <button class="icon-btn" id="pauseBtn" type="button" aria-label="暂停" aria-pressed="false" title="暂停（空格）" disabled>❚❚</button>
+      </div>
+    </header>
+
+    <section class="scoreboard" aria-label="游戏数据">
+      <div class="stat">
+        <span class="stat-label">得分</span>
+        <strong class="stat-value" id="scoreValue" aria-live="polite">0</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">最高分</span>
+        <strong class="stat-value best" id="bestValue">0</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-label">速度</span>
+        <strong class="stat-value speed" id="speedValue">Lv.1 · 150ms</strong>
+      </div>
+    </section>
+
+    <main class="stage-wrap" id="stageWrap">
+      <div class="board-frame" id="boardFrame">
+        <canvas id="board" width="640" height="640" tabindex="0" role="application"
+          aria-label="贪吃蛇棋盘，20 乘 20 格。方向键或 WASD 控制移动，空格暂停，R 重新开始。"></canvas>
+
+        <div class="ai-bar" id="aiBar" hidden>
+          <span class="ai-live"><i aria-hidden="true"></i>🤖 AI 演示中</span>
+          <span class="ai-steps" id="aiStats">0 步</span>
+          <button class="ai-speed" id="aiSpeedBtn" type="button" aria-label="AI 演示速度，当前 16 倍，点击切换">×16</button>
+        </div>
+
+        <div class="overlay is-visible" id="overlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+          <div class="overlay-card">
+            <section class="panel" id="startPanel">
+              <p class="eyebrow">SNAKE / 经典重构</p>
+              <h2 id="startTitle">准备出发</h2>
+              <p class="lede">吃下果实，让蛇身填满整块棋盘。</p>
+
+              <div class="difficulty">
+                <span class="difficulty-label" id="difficultyLabel">难度</span>
+                <div class="segmented" id="difficultyGroup" role="group" aria-labelledby="difficultyLabel">
+                  <button type="button" data-difficulty="easy" aria-pressed="false">轻松</button>
+                  <button type="button" data-difficulty="normal" aria-pressed="true">标准</button>
+                  <button type="button" data-difficulty="hard" aria-pressed="false">困难</button>
+                  <button type="button" data-difficulty="insane" aria-pressed="false">狂野</button>
+                </div>
+              </div>
+
+              <button class="btn primary big" id="startBtn" type="button">开始游戏</button>
+              <button class="btn ai-demo big" id="aiDemoBtn" type="button">🤖 看 AI 演示</button>
+              <p class="shortcuts">方向键 / WASD · 空格暂停 · R 重开</p>
+            </section>
+
+            <section class="panel" id="pausePanel" hidden>
+              <p class="eyebrow">PAUSED</p>
+              <h2 id="pauseTitle">已暂停</h2>
+              <p class="lede" id="pauseLede">喘口气，节奏还在。</p>
+              <button class="btn primary big" id="resumeBtn" type="button">继续游戏</button>
+              <button class="btn ghost big" id="restartFromPauseBtn" type="button">重新开始</button>
+              <p class="shortcuts">空格 / P 继续 · R 重开</p>
+            </section>
+
+            <section class="panel" id="overPanel" hidden>
+              <p class="eyebrow danger">GAME OVER</p>
+              <h2 id="overTitle">本局结束</h2>
+              <p class="result-line">得分 <strong id="overScore">0</strong></p>
+              <p class="result-meta" id="overBest">最高分 0</p>
+              <button class="btn primary big" id="restartBtn" type="button">再来一局</button>
+              <button class="btn ai-demo big" id="aiDemoOverBtn" type="button">🤖 看 AI 演示</button>
+              <p class="shortcuts">Enter / R 重开</p>
+            </section>
+
+            <section class="panel win-panel" id="winPanel" hidden>
+              <p class="eyebrow win">PERFECT CLEAR</p>
+              <h2 id="winTitle">棋盘填满！</h2>
+              <p class="win-text" id="winText">你用 397 个果实填满了整个棋盘。</p>
+              <div class="win-score" aria-label="397 个果实"><strong>397</strong><span>果实</span></div>
+              <button class="btn primary big" id="winRestartBtn" type="button">再来一局</button>
+              <button class="btn ai-demo big" id="winAiBtn" type="button">🤖 看 AI 演示</button>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="controls" id="controls">
+      <div class="keyboard-hint" id="keyboardHint">
+        <span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> / <kbd>WASD</kbd> 移动</span>
+        <span><kbd>Space</kbd> 暂停</span>
+        <span><kbd>R</kbd> 重开</span>
+        <span class="hint-dim">拖动棋盘也可转向</span>
+      </div>
+      <div class="swipe-hint" id="swipeHint">滑动棋盘或使用方向键转向</div>
+      <div class="dpad" id="dpad" role="group" aria-label="触摸方向键">
+        <button class="dpad-btn up" type="button" data-dir="up" aria-label="向上">▲</button>
+        <button class="dpad-btn left" type="button" data-dir="left" aria-label="向左">◀</button>
+        <button class="dpad-btn center" type="button" data-action="pause" aria-label="暂停">❚❚</button>
+        <button class="dpad-btn right" type="button" data-dir="right" aria-label="向右">▶</button>
+        <button class="dpad-btn down" type="button" data-dir="down" aria-label="向下">▼</button>
+      </div>
+    </footer>
+  </div>
+
+  <noscript>这个游戏需要启用 JavaScript。</noscript>
+  <script src="ai.js?v=1"></script>
+  <script src="game.js?v=1"></script>
+</body>
+</html>
