@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "20×20 原生贪吃蛇 + 哈密顿环 AI + PWA",
+  "license": "MIT",
+  "author": "Deron Qi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeronQi/snake-game-claude-with-deepseek.git"
+  },
+  "homepage": "https://github.com/DeronQi/snake-game-claude-with-deepseek#readme",
   "scripts": {
     "simulate": "node tools/simulate-ai.cjs",
     "analyze": "node tools/analyze-ai.cjs",

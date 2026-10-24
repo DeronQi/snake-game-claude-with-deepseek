@@ -20,6 +20,7 @@
 | `tools/verify.cjs` | Playwright：四视口、像素识别自动游玩、AI 通关、file:// |
 | `tools/verify-sw-update.cjs` | Playwright：脏缓存、SW 更新、旧缓存清理、离线刷新 |
 | `tools/make_icons.py` | Pillow 图标生成脚本（可重复运行） |
+| `LICENSE` | MIT 开源许可证 |
 | `CHANGELOG.md` | 版本与验证记录 |
 | `package.json` | **仅开发验证**所需的 Playwright 依赖与 npm scripts |
 | `.gitignore` | 忽略依赖、本地工具与测试产物 |
@@ -188,3 +189,7 @@ node tools/simulate-ai.cjs --stress=1000
 ## 浏览器支持
 
 面向支持 ES2020、Canvas 2D、ResizeObserver、Pointer Events 的现代浏览器：Chrome / Edge 90+、Safari 15.4+、Firefox 100+。Service Worker、安装与震动能力按特性检测降级，不影响基础游戏。
+
+## 许可证
+
+本项目采用 [MIT License](LICENSE)，Copyright (c) 2026 Deron Qi。
